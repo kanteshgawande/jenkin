@@ -30,17 +30,19 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+       stage('Deploy') {
             steps {
-                bat '''
-                set KUBECONFIG=C:\\ProgramData\\Jenkins\\.kube\\config
-                kubectl apply -f k8s.yaml
-                '''
+                script {
+                    def imageTag = "tictactoe-app:${env.BUILD_NUMBER}"
+                    bat """
+                    set KUBECONFIG=C:\\ProgramData\\Jenkins\\.kube\\config
+                    kubectl set image deployment/tictactoe tictactoe=${imageTag}
+                    """
                 }
             }
         }
 
-         options {
+        options {
         timeout(time: 10, unit: 'MINUTES')
         }
 
