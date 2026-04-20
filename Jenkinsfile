@@ -21,8 +21,8 @@ pipeline {
             }
         }
 
-       stage('Build Docker Image') {
-          steps {
+        stage('Build Docker Image') {
+            steps {
                 script {
                     def imageTag = "tictactoe-app:${env.BUILD_NUMBER}"
                     bat "minikube image build -t ${imageTag} ."
@@ -30,7 +30,7 @@ pipeline {
             }
         }
 
-       stage('Deploy') {
+        stage('Deploy') {
             steps {
                 script {
                     def imageTag = "tictactoe-app:${env.BUILD_NUMBER}"
@@ -41,14 +41,15 @@ pipeline {
                 }
             }
         }
+    }
 
-        options {
+    options {
         timeout(time: 10, unit: 'MINUTES')
-        }
+    }
 
-        post {
-            always {
-                cleanWs()
-            }
+    post {
+        always {
+            cleanWs()
         }
+    }
 }
