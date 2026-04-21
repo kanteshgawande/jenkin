@@ -20,23 +20,32 @@ pipeline {
                 bat 'mvn clean package -DskipTests'
             }
         }
-
-        
-
-      stage('Deploy') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                def imageTag = "tictactoe-app:${env.BUILD_NUMBER}"
-                bat """
-                set KUBECONFIG=C:\\ProgramData\\Jenkins\\.kube\\config
-
-                kubectl apply -f k8s.yaml
-
-                kubectl set image deployment/tictactoe tictactoe=${imageTag}
-                """
+                def imageTag = "kanteshgawande/tictactoe-app:${env.BUILD_NUMBER}"
+            
+                bat "docker build -t ${imageTag} ."
+                bat "docker push ${imageTag}"
+                }
             }
         }
-    }
+        
+
+        stage('Deploy') {
+            steps {
+                script {
+                    def imageTag = "kanteshgawande/tictactoe-app:${env.BUILD_NUMBER}"
+                    bat """
+                    set KUBECONFIG=C:\\ProgramData\\Jenkins\\.kube\\config
+
+                    kubectl apply -f k8s.yaml
+
+                    kubectl set image deployment/tictactoe tictactoe=${imageTag}
+                    """
+                }
+            }
+        } 
     }
 
     options {
