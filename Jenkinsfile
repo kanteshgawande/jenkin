@@ -21,26 +21,22 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    def imageTag = "tictactoe-app:${env.BUILD_NUMBER}"
-                    bat "minikube image build -t ${imageTag} ."
-                }
-            }
-        }
+        
 
-        stage('Deploy') {
+      stage('Deploy') {
             steps {
                 script {
-                    def imageTag = "tictactoe-app:${env.BUILD_NUMBER}"
-                    bat """
-                    set KUBECONFIG=C:\\ProgramData\\Jenkins\\.kube\\config
-                    kubectl set image deployment/tictactoe tictactoe=${imageTag}
-                    """
-                }
+                def imageTag = "tictactoe-app:${env.BUILD_NUMBER}"
+                bat """
+                set KUBECONFIG=C:\\ProgramData\\Jenkins\\.kube\\config
+
+                kubectl apply -f k8s.yaml
+
+                kubectl set image deployment/tictactoe tictactoe=${imageTag}
+                """
             }
         }
+    }
     }
 
     options {
