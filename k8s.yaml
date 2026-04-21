@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: tictactoe
-        image: kanteshgawande/tictactoe-app:latest
+        image: kantesh11/tictactoe-app:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8081
